@@ -1,0 +1,261 @@
+name: 🏷️ Auto Label & Project Management
+
+on:
+  issues:
+    types: [opened, edited]
+  pull_request:
+    types: [opened, edited, synchronize]
+  push:
+    branches: [main]
+
+jobs:
+  auto-label:
+    name: 🏷️ Auto Label Issues & PRs
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: 🏷️ Label Issues and PRs
+      uses: github/super-linter@v4
+      if: github.event_name == 'pull_request'
+      env:
+        DEFAULT_BRANCH: main
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: 🏷️ Auto-label based on files changed
+      if: github.event_name == 'pull_request'
+      uses: actions/labeler@v4
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        configuration-path: .github/labeler.yml
+
+    - name: 🧪 Label Test Files
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const { data: files } = await github.rest.pulls.listFiles({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.issue.number
+          });
+          
+          const labels = [];
+          
+          // Check for test-related changes
+          const testFiles = files.filter(f => f.filename.includes('test') || f.filename.includes('Test'));
+          if (testFiles.length > 0) {
+            labels.push('tests');
+          }
+          
+          // Check for Selenium-related changes
+          const seleniumFiles = files.filter(f => f.filename.includes('selenium') || f.filename.includes('Selenium'));
+          if (seleniumFiles.length > 0) {
+            labels.push('selenium');
+          }
+          
+          // Check for Playwright-related changes
+          const playwrightFiles = files.filter(f => f.filename.includes('playwright') || f.filename.includes('Playwright'));
+          if (playwrightFiles.length > 0) {
+            labels.push('playwright');
+          }
+          
+          // Check for CI/CD changes
+          const ciFiles = files.filter(f => f.filename.includes('.github/workflows'));
+          if (ciFiles.length > 0) {
+            labels.push('ci-cd');
+          }
+          
+          // Check for documentation changes
+          const docFiles = files.filter(f => f.filename.includes('.md') || f.filename.includes('README'));
+          if (docFiles.length > 0) {
+            labels.push('documentation');
+          }
+          
+          // Apply labels
+          if (labels.length > 0) {
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: labels
+            });
+          }
+
+  size-labeling:
+    name: 📏 PR Size Labeling
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+    - name: 📏 Label PR by Size
+      uses: pascalgn/size-label-action@v0.4.3
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        sizes: >
+          {
+            "0": "XS",
+            "20": "S", 
+            "50": "M",
+            "200": "L",
+            "800": "XL",
+            "2000": "XXL"
+          }
+
+  welcome-message:
+    name: 👋 Welcome New Contributors
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.action == 'opened'
+
+    steps:
+    - name: 👋 Welcome First-time Contributors
+      uses: actions/github-script@v6
+      with:
+        script: |
+          // Check if this is the user's first PR
+          const { data: prs } = await github.rest.pulls.list({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            state: 'all',
+            creator: context.payload.pull_request.user.login
+          });
+          
+          if (prs.length === 1) {
+            // This is a first-time contributor
+            const message = `
+            ## 👋 Welcome to the Test Automation Framework!
+            
+            Thank you **@${context.payload.pull_request.user.login}** for your first contribution! 🎉
+            
+            ### 📋 What happens next?
+            1. **Automated checks** will run on your PR
+            2. **Code review** from maintainers
+            3. **Testing** on multiple environments
+            4. **Merge** once everything looks good!
+            
+            ### 🧪 Test Execution
+            Your PR will be automatically tested with:
+            - ✅ Selenium WebDriver tests
+            - ✅ Playwright tests  
+            - ✅ DemoQA integration tests
+            - ✅ Cross-platform compatibility
+            
+            ### 🤝 Need Help?
+            - Check our [Contributing Guide](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/README.md)
+            - Ask questions in the PR comments
+            - Join our discussions for general questions
+            
+            Thanks for contributing to open source! 🚀
+            `;
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: message
+            });
+          }
+
+  stale-management:
+    name: 🗑️ Stale Issue Management
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+
+    steps:
+    - name: 🗑️ Mark Stale Issues and PRs
+      uses: actions/stale@v8
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        stale-issue-message: |
+          ## 📋 This issue has been marked as stale
+          
+          This issue has been automatically marked as stale because it has not had recent activity. 
+          
+          **It will be closed in 7 days if no further activity occurs.**
+          
+          ### 🔄 To keep this issue open:
+          - Add a comment with updates
+          - Add the `keep-open` label
+          - Reference it in a PR
+          
+          Thank you for your contribution! 🙏
+          
+        stale-pr-message: |
+          ## 📋 This PR has been marked as stale
+          
+          This pull request has been automatically marked as stale because it has not had recent activity.
+          
+          **It will be closed in 7 days if no further activity occurs.**
+          
+          ### 🔄 To keep this PR open:
+          - Push new commits
+          - Add a comment with updates  
+          - Request review from maintainers
+          
+          Thank you for your contribution! 🙏
+          
+        stale-issue-label: 'stale'
+        stale-pr-label: 'stale'
+        days-before-stale: 30
+        days-before-close: 7
+        exempt-issue-labels: 'keep-open,enhancement,good-first-issue'
+        exempt-pr-labels: 'keep-open,work-in-progress'
+
+  project-management:
+    name: 📋 Project Board Management
+    runs-on: ubuntu-latest
+    if: github.event_name == 'issues' || github.event_name == 'pull_request'
+
+    steps:
+    - name: 📋 Add Issues to Project Board
+      if: github.event_name == 'issues' && github.event.action == 'opened'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          // Auto-assign issues to project board
+          const labels = context.payload.issue.labels.map(l => l.name);
+          
+          let column = 'To Do';
+          if (labels.includes('bug')) {
+            column = 'Bug Triage';
+          } else if (labels.includes('enhancement')) {
+            column = 'Feature Requests';
+          } else if (labels.includes('test-failure')) {
+            column = 'Test Issues';
+          }
+          
+          console.log(`Issue #${context.issue.number} will be added to ${column}`);
+
+    - name: 📋 Auto-assign based on file changes
+      if: github.event_name == 'pull_request' && github.event.action == 'opened'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const { data: files } = await github.rest.pulls.listFiles({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.issue.number
+          });
+          
+          // Auto-assign reviewers based on changed files
+          let reviewers = [];
+          
+          const hasTestChanges = files.some(f => f.filename.includes('test'));
+          const hasCIChanges = files.some(f => f.filename.includes('.github'));
+          const hasDocChanges = files.some(f => f.filename.includes('.md'));
+          
+          if (hasTestChanges || hasCIChanges || hasDocChanges) {
+            reviewers.push('KedarNanadikar');
+          }
+          
+          if (reviewers.length > 0) {
+            await github.rest.pulls.requestReviewers({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              reviewers: reviewers
+            });
+          }

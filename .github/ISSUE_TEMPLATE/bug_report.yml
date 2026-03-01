@@ -1,0 +1,135 @@
+name: 🐛 Bug Report
+description: Report a bug or issue with the test automation framework
+title: "🐛 [BUG]: "
+labels: ["bug", "needs-triage"]
+assignees:
+  - KedarNanadikar
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please fill out this form to help us understand and fix the issue.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: 🐛 What happened?
+      description: A clear and concise description of the bug
+      placeholder: Tell us what you see!
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: ✅ Expected Behavior
+      description: What did you expect to happen?
+      placeholder: Tell us what you expected!
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: 🔄 Steps to Reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Go to '..'
+        2. Click on '...'
+        3. Scroll down to '...'
+        4. See error
+    validations:
+      required: true
+
+  - type: dropdown
+    id: test-framework
+    attributes:
+      label: 🧪 Test Framework
+      description: Which test framework is affected?
+      options:
+        - Selenium WebDriver
+        - Playwright
+        - Both Selenium and Playwright
+        - TestNG Configuration
+        - Maven Build
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: 🌐 Browser
+      description: Which browser(s) are affected?
+      options:
+        - Chrome
+        - Firefox
+        - Safari
+        - Edge
+        - All Browsers
+        - Not browser specific
+    validations:
+      required: true
+
+  - type: dropdown
+    id: operating-system
+    attributes:
+      label: 💻 Operating System
+      description: Which operating system are you using?
+      options:
+        - Windows 11
+        - Windows 10
+        - macOS Ventura (13.x)
+        - macOS Monterey (12.x)
+        - macOS Big Sur (11.x)
+        - Ubuntu 22.04
+        - Ubuntu 20.04
+        - Other Linux
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: java-version
+    attributes:
+      label: ☕ Java Version
+      description: What version of Java are you running?
+      placeholder: "e.g., Java 11, Java 17"
+    validations:
+      required: true
+
+  - type: input
+    id: maven-version
+    attributes:
+      label: 📦 Maven Version
+      description: What version of Maven are you using?
+      placeholder: "e.g., Maven 3.8.1"
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 📋 Relevant Log Output
+      description: Please copy and paste any relevant log output
+      render: shell
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: 📝 Additional Context
+      description: Add any other context about the problem here
+      placeholder: Screenshots, error messages, configuration details, etc.
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: ✅ Checklist
+      description: Please confirm the following
+      options:
+        - label: I have searched existing issues to ensure this is not a duplicate
+          required: true
+        - label: I have provided all the requested information
+          required: true
+        - label: I am willing to help test the fix
+          required: false

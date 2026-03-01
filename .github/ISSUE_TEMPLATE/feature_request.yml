@@ -1,0 +1,111 @@
+name: ✨ Feature Request
+description: Suggest a new feature or enhancement for the test automation framework
+title: "✨ [FEATURE]: "
+labels: ["enhancement", "needs-triage"]
+assignees:
+  - KedarNanadikar
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new feature! Please fill out this form to help us understand your request.
+
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: 🚀 Feature Description
+      description: A clear and concise description of the feature you'd like to see
+      placeholder: Describe the feature you want!
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem-solution
+    attributes:
+      label: 🎯 Problem & Solution
+      description: What problem does this feature solve? How should it work?
+      placeholder: |
+        **Problem**: Currently I can't...
+        **Solution**: I would like to be able to...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: feature-category
+    attributes:
+      label: 📂 Feature Category
+      description: What category does this feature belong to?
+      options:
+        - Test Framework (Selenium/Playwright)
+        - Reporting (ExtentReports)
+        - Page Object Model
+        - CI/CD Integration
+        - Documentation
+        - Configuration
+        - New Test Site Integration
+        - Performance Testing
+        - API Testing
+        - Mobile Testing
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 🔥 Priority
+      description: How important is this feature to you?
+      options:
+        - Low - Nice to have
+        - Medium - Would improve workflow
+        - High - Critical for my use case
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 🔄 Alternatives Considered
+      description: Have you considered any alternative solutions or workarounds?
+      placeholder: Describe any alternatives you've thought about
+
+  - type: textarea
+    id: use-cases
+    attributes:
+      label: 💡 Use Cases
+      description: Provide specific use cases or examples where this feature would be helpful
+      placeholder: |
+        1. When testing e-commerce sites...
+        2. For regression testing scenarios...
+        3. In CI/CD pipelines...
+
+  - type: textarea
+    id: implementation-ideas
+    attributes:
+      label: 🛠️ Implementation Ideas
+      description: Do you have any ideas on how this could be implemented?
+      placeholder: If you have technical suggestions or code examples, share them here
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: 🤝 Contribution
+      description: Are you willing to contribute to this feature?
+      options:
+        - label: I would like to work on implementing this feature
+        - label: I can help with testing the feature
+        - label: I can provide additional requirements/feedback
+        - label: I can help with documentation
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: ✅ Checklist
+      description: Please confirm the following
+      options:
+        - label: I have searched existing feature requests to ensure this is not a duplicate
+          required: true
+        - label: I have provided clear use cases for this feature
+          required: true
+        - label: This feature would benefit other users of the framework
+          required: true
