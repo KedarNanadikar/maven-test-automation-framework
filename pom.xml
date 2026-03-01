@@ -19,7 +19,7 @@
         <junit.version>5.9.2</junit.version>
         <selenium.version>3.141.59</selenium.version>
         <testng.version>6.14.3</testng.version>
-        <webdrivermanager.version>5.8.0</webdrivermanager.version>
+        <webdrivermanager.version>6.3.3</webdrivermanager.version>
     </properties>
 
     <dependencies>
