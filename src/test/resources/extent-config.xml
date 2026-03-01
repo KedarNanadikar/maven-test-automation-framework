@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extentreports>
+    <configuration>
+        <!-- Report theme: STANDARD, DARK -->
+        <theme>STANDARD</theme>
+        
+        <!-- Document title -->
+        <documentTitle>Selenium Test Automation Report</documentTitle>
+        
+        <!-- Report name -->
+        <reportName>Automated Test Results</reportName>
+        
+        <!-- Report headline -->
+        <reportHeadline>Test Execution Report</reportHeadline>
+        
+        <!-- Date format -->
+        <dateFormat>MMM dd, yyyy HH:mm:ss</dateFormat>
+        
+        <!-- Time stamp format -->
+        <timeStampFormat>MMM dd, yyyy HH:mm:ss</timeStampFormat>
+        
+        <!-- Protocol for https -->
+        <protocol>https</protocol>
+        
+        <!-- Report encoding -->
+        <encoding>UTF-8</encoding>
+        
+        <!-- CSS customization -->
+        <css>
+            .extent-header {
+                background-color: #2196F3;
+            }
+            .test-content .test-time-info {
+                color: #666;
+            }
+        </css>
+        
+        <!-- JavaScript customization -->
+        <js>
+            $(document).ready(function() {
+                console.log('ExtentReports initialized');
+            });
+        </js>
+    </configuration>
+</extentreports>

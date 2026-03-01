@@ -1,0 +1,62 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="SeleniumTestSuite">
+    <parameter name="browser" value="chrome"/>
+    
+    <test name="IntegrationTests">
+        <groups>
+            <run>
+                <exclude name="web"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.example.selenium.SeleniumIntegrationTest"/>
+        </classes>
+    </test>
+    
+    <test name="WebSearchTests" enabled="true">
+        <groups>
+            <run>
+                <include name="web"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.example.selenium.SeleniumIntegrationTest"/>
+        </classes>
+    </test>
+    
+    <test name="WebTests" enabled="false">
+        <classes>
+            <class name="com.example.selenium.GoogleSearchTest"/>
+            <class name="com.example.selenium.WebElementTest"/>
+        </classes>
+    </test>
+    
+    <test name="UnitTests">
+        <classes>
+            <class name="com.example.AppTestNG"/>
+        </classes>
+    </test>
+    
+    <test name="PlaywrightTests" enabled="true">
+        <groups>
+            <run>
+                <include name="web"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="com.example.playwright.PlaywrightIntegrationTest"/>
+        </classes>
+    </test>
+    
+    <test name="ImprovedPlaywrightTests" enabled="true">
+        <classes>
+            <class name="com.example.playwright.tests.ImprovedPlaywrightTests"/>
+        </classes>
+    </test>
+    
+    <test name="DemoQATests" enabled="true">
+        <classes>
+            <class name="com.example.playwright.tests.DemoQATests"/>
+        </classes>
+    </test>
+</suite>
