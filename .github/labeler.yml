@@ -1,0 +1,106 @@
+# Configuration for the labeler action
+# https://github.com/actions/labeler
+
+# Test-related changes
+tests:
+  - 'src/test/**/*'
+  - '**/*Test.java'
+  - '**/test*/**/*'
+
+# Selenium-related changes  
+selenium:
+  - '**/selenium/**/*'
+  - '**/*Selenium*'
+  - '**/SeleniumIntegrationTest.java'
+
+# Playwright-related changes
+playwright:
+  - '**/playwright/**/*'
+  - '**/*Playwright*'
+  - '**/ImprovedPlaywrightTests.java'
+  - '**/DemoQATests.java'
+
+# Page Object Model changes
+page-objects:
+  - '**/pages/**/*'
+  - '**/*Page.java'
+  - '**/BasePage.java'
+
+# CI/CD related changes
+ci-cd:
+  - '.github/workflows/**/*'
+  - '.github/**/*'
+  - '**/ci.yml'
+  - '**/release.yml'
+
+# Documentation changes
+documentation:
+  - '**/*.md'
+  - 'README*'
+  - 'CHANGELOG*'
+  - 'CONTRIBUTING*'
+  - 'docs/**/*'
+
+# Configuration changes
+configuration:
+  - 'pom.xml'
+  - '**/testng.xml'
+  - '**/extent-config.xml'
+  - '**/*.properties'
+  - '**/*.yml'
+  - '**/*.yaml'
+
+# Dependencies
+dependencies:
+  - 'pom.xml'
+
+# Bug fixes (based on branch naming)
+bug:
+  - 'fix/**/*'
+  - 'bugfix/**/*'
+  - 'hotfix/**/*'
+
+# New features
+enhancement:
+  - 'feature/**/*'
+  - 'feat/**/*'
+
+# Performance improvements
+performance:
+  - '**/performance/**/*'
+  - '**/*Performance*'
+
+# Security related
+security:
+  - '**/security/**/*'
+  - '.github/dependabot.yml'
+  - '**/dependencies.yml'
+
+# Build system changes
+build:
+  - 'pom.xml'
+  - '.mvn/**/*'
+  - '**/maven-wrapper*'
+
+# Utils and helpers
+utils:
+  - '**/utils/**/*'
+  - '**/TestConfig.java'
+  - '**/BaseTest.java'
+
+# Reporting
+reporting:
+  - '**/reports/**/*'
+  - '**/extent-config.xml'
+  - '**/*Report*'
+
+# Mobile testing (future)
+mobile:
+  - '**/mobile/**/*'
+  - '**/*Mobile*'
+
+# API testing (future)  
+api:
+  - '**/api/**/*'
+  - '**/*API*'
+  - '**/*Api*'

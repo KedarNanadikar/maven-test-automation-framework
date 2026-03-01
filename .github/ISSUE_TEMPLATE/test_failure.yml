@@ -1,0 +1,151 @@
+name: 🚫 Test Failure Report
+description: Report a failing test case or test suite issue
+title: "🚫 [TEST FAILURE]: "
+labels: ["test-failure", "needs-investigation"]
+assignees:
+  - KedarNanadikar
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a test failure! This helps us maintain the quality of our test suite.
+
+  - type: dropdown
+    id: test-suite
+    attributes:
+      label: 🧪 Test Suite
+      description: Which test suite is failing?
+      options:
+        - Selenium Integration Tests
+        - Playwright Tests (Google)
+        - DemoQA Tests
+        - All Tests
+        - Custom Test
+    validations:
+      required: true
+
+  - type: textarea
+    id: test-name
+    attributes:
+      label: 📝 Test Method/Class Name
+      description: Specific test method or class that's failing
+      placeholder: "e.g., testGoogleSearchFlipkartAndClickFirstResult, DemoQATests.testTextBoxFormFunctionality"
+    validations:
+      required: true
+
+  - type: textarea
+    id: failure-description
+    attributes:
+      label: 🚫 Failure Description
+      description: Describe what the test failure looks like
+      placeholder: "Test fails with assertion error, timeout, element not found, etc."
+    validations:
+      required: true
+
+  - type: textarea
+    id: error-message
+    attributes:
+      label: ❌ Error Message/Stack Trace
+      description: Copy the complete error message and stack trace
+      render: shell
+    validations:
+      required: true
+
+  - type: dropdown
+    id: frequency
+    attributes:
+      label: 📊 Failure Frequency
+      description: How often does this test fail?
+      options:
+        - Always fails (100%)
+        - Frequently fails (>50%)
+        - Occasionally fails (10-50%)
+        - Rarely fails (<10%)
+        - First time seeing this failure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: 🌍 Environment
+      description: Where is the test failing?
+      options:
+        - Local Development
+        - CI/CD Pipeline (GitHub Actions)
+        - Both Local and CI/CD
+        - Production/Staging Environment
+    validations:
+      required: true
+
+  - type: input
+    id: commit-hash
+    attributes:
+      label: 🔍 Last Working Commit
+      description: If known, what was the last commit where this test passed?
+      placeholder: "e.g., 8aee936 or 'Unknown'"
+
+  - type: textarea
+    id: recent-changes
+    attributes:
+      label: 🔄 Recent Changes
+      description: Any recent changes that might have caused this failure?
+      placeholder: "Code changes, dependency updates, environment changes, etc."
+
+  - type: textarea
+    id: screenshots-logs
+    attributes:
+      label: 📸 Screenshots & Logs
+      description: Attach any relevant screenshots, test reports, or additional logs
+      placeholder: "Drag and drop files here or paste URLs to error screenshots"
+
+  - type: dropdown
+    id: browser-specific
+    attributes:
+      label: 🌐 Browser Specific?
+      description: Is this failure specific to certain browsers?
+      options:
+        - All Browsers
+        - Chrome Only
+        - Firefox Only
+        - Safari Only
+        - Edge Only
+        - Multiple Browsers (specify in comments)
+        - Not Browser Related
+
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: 🔄 Steps to Reproduce
+      description: How can we reproduce this test failure?
+      placeholder: |
+        1. Run command: mvn test -Dtest=...
+        2. Observe failure at step...
+        3. Error occurs when...
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: investigation
+    attributes:
+      label: 🔍 Investigation Done
+      description: What investigation have you already done?
+      options:
+        - label: Checked if test passes in isolation
+        - label: Verified test data and environment setup
+        - label: Checked browser/driver versions
+        - label: Reviewed recent code changes
+        - label: Checked for flaky test patterns
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: ✅ Checklist
+      description: Please confirm the following
+      options:
+        - label: I have provided the complete error message/stack trace
+          required: true
+        - label: I have specified the exact test that's failing
+          required: true
+        - label: I have checked existing issues for similar test failures
+          required: true

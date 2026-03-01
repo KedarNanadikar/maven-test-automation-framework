@@ -1,0 +1,40 @@
+version: 2
+updates:
+  # Enable version updates for Maven dependencies
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "KedarNanadikar"
+    assignees:
+      - "KedarNanadikar"
+    commit-message:
+      prefix: "⬆️"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "automated"
+
+  # Enable version updates for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"  
+      time: "09:00"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "KedarNanadikar"
+    assignees:
+      - "KedarNanadikar"
+    commit-message:
+      prefix: "⬆️ CI:"
+      include: "scope"
+    labels:
+      - "ci-cd"
+      - "github-actions"
+      - "automated"

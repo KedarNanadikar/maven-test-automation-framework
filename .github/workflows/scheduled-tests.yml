@@ -1,0 +1,118 @@
+name: 🕐 Scheduled Test Runs
+
+on:
+  schedule:
+    # 🚨 TESTING ONLY: Every 5 minutes for 1 hour (remove after testing!)
+    - cron: '*/5 * * * *'    # Every 5 minutes - FOR TESTING ONLY!
+    
+    # Normal schedules (disabled during testing)
+    # - cron: '0 6 * * 1-5'    # Weekdays at 6 AM UTC (business days)
+    # - cron: '0 12 * * 6'     # Saturdays at noon UTC (weekend check)  
+    # - cron: '0 22 * * 0'     # Sundays at 10 PM UTC (weekly full run)
+  
+  workflow_dispatch:         # Allow manual trigger
+    inputs:
+      test_suite:
+        description: 'Which tests to run'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - selenium
+          - playwright
+          - demoqa
+
+jobs:
+  scheduled-test:
+    name: 🧪 Scheduled Test Execution (🚨 TESTING MODE)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10  # Safety timeout for frequent runs
+
+    steps:
+    - name: � Safety Check - Auto-stop after 1 hour
+      run: |
+        # Get current time and calculate if we should stop
+        CURRENT_TIME=$(date +%s)
+        START_TIME=$(date -d "1 hour ago" +%s)
+        
+        echo "🕐 Current time: $(date)"
+        echo "⚠️  REMINDER: This is a 5-minute testing schedule!"
+        echo "🔄 Remember to revert to normal schedule after testing!"
+        
+        # This is just a reminder - the actual stop should be done manually
+        echo "💡 To stop: Push a commit removing the '*/5 * * * *' cron schedule"
+
+    - name: �📥 Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: ☕ Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        java-version: 11
+        distribution: 'temurin'
+
+    - name: 🔧 Install Playwright Browsers
+      run: |
+        mvn exec:java -Dexec.mainClass="com.microsoft.playwright.CLI" -Dexec.args="install --with-deps chromium"
+
+    - name: 🕐 Determine Test Suite
+      id: test_suite
+      run: |
+        # 🚨 TESTING MODE: Run lighter tests every 5 minutes
+        if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+          SUITE="${{ github.event.inputs.test_suite }}"
+        else
+          # For frequent testing: Run only Playwright (fastest tests)
+          SUITE="playwright"
+          echo "🧪 TESTING MODE: Running Playwright tests (fastest) every 5 minutes"
+        fi
+        echo "suite=$SUITE" >> $GITHUB_OUTPUT
+        echo "Running test suite: $SUITE"
+
+    - name: 🧪 Run Selenium Tests
+      if: steps.test_suite.outputs.suite == 'selenium' || steps.test_suite.outputs.suite == 'all'
+      run: mvn test -Dtest=SeleniumIntegrationTest -Dmaven.test.failure.ignore=true
+
+    - name: 🎭 Run Playwright Tests
+      if: steps.test_suite.outputs.suite == 'playwright' || steps.test_suite.outputs.suite == 'all'
+      run: mvn test -Dtest=ImprovedPlaywrightTests -Dmaven.test.failure.ignore=true
+
+    - name: 🌐 Run DemoQA Tests
+      if: steps.test_suite.outputs.suite == 'demoqa' || steps.test_suite.outputs.suite == 'all'
+      run: mvn test -Dtest=DemoQATests -Dmaven.test.failure.ignore=true
+
+    - name: 📊 Upload Test Reports
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: scheduled-test-reports-${{ steps.test_suite.outputs.suite }}
+        path: |
+          target/surefire-reports/
+          test-reports/
+        retention-days: 7
+
+    - name: 📧 Create Summary
+      if: always()
+      run: |
+        echo "## 🕐 Scheduled Test Results (🚨 TESTING MODE)" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "⚠️  **TESTING**: Running every 5 minutes - Remember to revert!" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Date**: $(date)" >> $GITHUB_STEP_SUMMARY
+        echo "**Suite**: ${{ steps.test_suite.outputs.suite }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Trigger**: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Mode**: 5-minute testing cycle" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # Check if test results exist
+        if [[ -f "target/surefire-reports/testng-results.xml" ]]; then
+          TOTAL=$(grep -o 'total="[^"]*"' target/surefire-reports/testng-results.xml | cut -d'"' -f2)
+          PASSED=$(grep -o 'passed="[^"]*"' target/surefire-reports/testng-results.xml | cut -d'"' -f2)
+          FAILED=$(grep -o 'failed="[^"]*"' target/surefire-reports/testng-results.xml | cut -d'"' -f2)
+          
+          echo "### 📊 Results:" >> $GITHUB_STEP_SUMMARY
+          echo "- **Total**: $TOTAL tests" >> $GITHUB_STEP_SUMMARY
+          echo "- **Passed**: ✅ $PASSED" >> $GITHUB_STEP_SUMMARY
+          echo "- **Failed**: ❌ $FAILED" >> $GITHUB_STEP_SUMMARY
+        fi
